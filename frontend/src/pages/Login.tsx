@@ -9,7 +9,7 @@ const Login: React.FC = () => {
   return (
     <div className="login-container">
       <div className="login-card">
-        <h1>Welcome Back 👋</h1>
+        <h1>Welcome Back </h1>
         <p>Sign in to continue</p>
 
         <button className="google-btn" onClick={handleGoogleLogin}>
@@ -30,8 +30,7 @@ const Login: React.FC = () => {
         <button className="email-btn">Continue with Email</button>
 
         <p>
-          Don’t have an account?{" "}
-          <a href="/signup">Sign up</a>
+          Don’t have an account? <a href="/signup">Sign up</a>
         </p>
       </div>
     </div>
