@@ -1,30 +1,39 @@
 const router = require("express").Router();
 const passport = require("passport");
+const jwt = require("jsonwebtoken");
+const verifyJWT = require("../middleware/auth");
 
 // Start auth with Google
-router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
+router.get(
+  "/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
 
 // Callback
-router.get("/google/callback",
-  passport.authenticate("google", { failureRedirect: "http://localhost:5173/login" }),
+router.get(
+  "/google/callback",
+  passport.authenticate("google", {
+    session: false,
+    failureRedirect: "http://localhost:5173/login",
+  }),
   (req, res) => {
-    res.redirect("http://localhost:5173/dashboard"); // frontend redirect
+    const token = jwt.sign(
+      { id: req.user._id, email: req.user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+    res.redirect(`http://localhost:5173/dashboard?token=${token}`);
   }
 );
 
-// Get logged in user
-router.get("/user", (req, res) => {
-  if (req.user) {
-    res.json(req.user);
-  } else {
-    res.status(401).json({ message: "Not logged in" });
-  }
-});
-
-// Logout
-router.get("/logout", (req, res) => {
-  req.logout(() => {});
-  res.redirect("http://localhost:5173/");
+// Protected route
+router.get("/user", verifyJWT, (req, res) => {
+  res.json({
+    id: req.user._id,
+    name: req.user.name,
+    email: req.user.email,
+    picture: req.user.picture,
+  });
 });
 
 module.exports = router;

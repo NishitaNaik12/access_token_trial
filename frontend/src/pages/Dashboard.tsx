@@ -1,27 +1,107 @@
 import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import axios from "axios";
 
-const Dashboard = () => {
+const Dashboard: React.FC = () => {
   const [user, setUser] = useState<any>(null);
+  const location = useLocation();
 
   useEffect(() => {
-    axios.get("http://localhost:5000/auth/user", { withCredentials: true })
-      .then(res => setUser(res.data))
-      .catch(() => setUser(null));
-  }, []);
+    // Get token from URL
+    const params = new URLSearchParams(location.search);
+    const tokenFromUrl = params.get("token");
+    if (tokenFromUrl) {
+      localStorage.setItem("jwt", tokenFromUrl);
+      window.history.replaceState({}, document.title, "/dashboard"); // clean URL
+    }
+
+    const token = localStorage.getItem("jwt");
+    if (token) {
+      axios
+        .get("http://localhost:5000/auth/user", {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((res) => setUser(res.data))
+        .catch(() => setUser(null));
+    }
+  }, [location]);
 
   if (!user) {
-    return <p>Please login first</p>;
+    return (
+      <div style={{ textAlign: "center", marginTop: "50px" }}>
+        <p>Please login first</p>
+      </div>
+    );
   }
 
   return (
-    <div>
-      <h2>Welcome {user.name}</h2>
-      <img src={user.picture} alt="profile" />
-      <p>Email: {user.email}</p>
-      <button onClick={() => window.open("http://localhost:5000/auth/logout", "_self")}>
-        Logout
-      </button>
+    <div
+      style={{
+        fontFamily: "Arial, sans-serif",
+        background: "#f4f6f9",
+        minHeight: "100vh",
+      }}
+    >
+      {/* Navbar */}
+      <header
+        style={{
+          background: "#007bff",
+          color: "#fff",
+          padding: "15px 30px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <h1 style={{ margin: 0, fontSize: "22px" }}>My Dashboard</h1>
+        <button
+          onClick={() => {
+            localStorage.removeItem("jwt");
+            window.location.href = "/login";
+          }}
+          style={{
+            padding: "8px 16px",
+            backgroundColor: "#ff4b5c",
+            color: "white",
+            border: "none",
+            borderRadius: "6px",
+            cursor: "pointer",
+            fontSize: "14px",
+          }}
+        >
+          Logout
+        </button>
+      </header>
+
+      {/* Profile Card */}
+      <main style={{ padding: "30px", textAlign: "center" }}>
+        <div
+          style={{
+            maxWidth: "400px",
+            margin: "0 auto",
+            background: "white",
+            borderRadius: "12px",
+            padding: "20px",
+            boxShadow: "0px 4px 12px rgba(0,0,0,0.1)",
+          }}
+        >
+          <img
+            src={user.picture}
+            alt="Profile"
+            style={{
+              width: "120px",
+              height: "120px",
+              borderRadius: "50%",
+              border: "3px solid #007bff",
+              marginBottom: "15px",
+            }}
+          />
+          <h2 style={{ margin: "10px 0", color: "#333" }}>
+            Welcome, {user.name}
+          </h2>
+          <p style={{ color: "#555" }}>{user.email}</p>
+        </div>
+      </main>
     </div>
   );
 };

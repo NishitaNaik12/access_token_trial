@@ -5,6 +5,8 @@ const UserSchema = new mongoose.Schema({
   name: String,
   email: String,
   picture: String,
+  accessToken: String, // 🔑 Store Google access token
+  refreshToken: String, // (optional) Store refresh token for long-term access
 });
 
 module.exports = mongoose.model("User", UserSchema);
