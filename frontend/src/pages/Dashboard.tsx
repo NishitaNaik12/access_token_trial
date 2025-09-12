@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
+import placeholderImage from "./blank-profile-picture-973460_1280.png";
 
 const Dashboard: React.FC = () => {
   const [user, setUser] = useState<any>(null);
@@ -45,7 +46,7 @@ const Dashboard: React.FC = () => {
       {/* Navbar */}
       <header
         style={{
-          background: "#007bff",
+          background: "#1e00ffff",
           color: "#fff",
           padding: "15px 30px",
           display: "flex",
@@ -86,20 +87,25 @@ const Dashboard: React.FC = () => {
           }}
         >
           <img
-            src={user.picture}
+            src={user.picture || placeholderImage}
             alt="Profile"
+            onError={(e) => {
+              (e.currentTarget as HTMLImageElement).src = placeholderImage;
+            }}
             style={{
               width: "120px",
               height: "120px",
               borderRadius: "50%",
               border: "3px solid #007bff",
               marginBottom: "15px",
+              objectFit: "cover",
             }}
           />
+
           <h2 style={{ margin: "10px 0", color: "#333" }}>
-            Welcome, {user.name}
+            Welcome, {user.name || "User"}
           </h2>
-          <p style={{ color: "#555" }}>{user.email}</p>
+          <p style={{ color: "#555" }}>{user.email || "No email"}</p>
         </div>
       </main>
     </div>
