@@ -78,6 +78,20 @@ const Dashboard: React.FC = () => {
     );
   }
 
+  // Sidebar links array
+  const sidebarLinks = [
+    { icon: <Home size={18} />, label: "Dashboard", id: "dashboard" },
+    { icon: <BarChart2 size={18} />, label: "KPIs & Charts", id: "charts" },
+    { icon: <BarChart2 size={18} />, label: "EDA Graphs", id: "eda" },
+    { icon: <BarChart2 size={18} />, label: "Network Graphs", id: "network" },
+    {
+      icon: <BarChart2 size={18} />,
+      label: "Extended EDA",
+      id: "centrality",
+    },
+    { icon: <Settings size={18} />, label: "Settings", id: "settings" },
+  ];
+
   return (
     <div
       style={{
@@ -100,32 +114,20 @@ const Dashboard: React.FC = () => {
         }}
       >
         <div>
-          <h2 style={{ color: "#f9fafb", marginBottom: "30px" }}>
-            ✈️ Analytics
-          </h2>
+          <h2 style={{ color: "#f9fafb", marginBottom: "30px" }}>Analytics</h2>
           <nav
             style={{ display: "flex", flexDirection: "column", gap: "10px" }}
           >
-            {[
-              {
-                icon: <Home size={18} />,
-                label: "Dashboard",
-                link: "#dashboard",
-              },
-              {
-                icon: <BarChart2 size={18} />,
-                label: "Analytics",
-                link: "#analytics",
-              },
-              {
-                icon: <Settings size={18} />,
-                label: "Settings",
-                link: "#settings",
-              },
-            ].map((item, i) => (
-              <a
+            {sidebarLinks.map((item, i) => (
+              <button
                 key={i}
-                href={item.link}
+                onClick={() => {
+                  const section = document.getElementById(item.id);
+                  section?.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                  });
+                }}
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -133,7 +135,10 @@ const Dashboard: React.FC = () => {
                   padding: "10px 12px",
                   borderRadius: "8px",
                   color: "#e2e8f0",
-                  textDecoration: "none",
+                  background: "transparent",
+                  border: "none",
+                  textAlign: "left",
+                  cursor: "pointer",
                   transition: "background 0.2s",
                 }}
                 onMouseOver={(e) =>
@@ -144,7 +149,7 @@ const Dashboard: React.FC = () => {
                 }
               >
                 {item.icon} {item.label}
-              </a>
+              </button>
             ))}
           </nav>
         </div>
@@ -199,7 +204,7 @@ const Dashboard: React.FC = () => {
         </header>
 
         {/* Dashboard Content */}
-        <main style={{ padding: "30px", flex: 1 }}>
+        <main id="dashboard" style={{ padding: "30px", flex: 1 }}>
           <h1
             style={{ marginBottom: "30px", fontSize: "26px", fontWeight: 600 }}
           >
@@ -208,6 +213,7 @@ const Dashboard: React.FC = () => {
 
           {/* KPIs */}
           <div
+            id="charts"
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
@@ -350,22 +356,26 @@ const Dashboard: React.FC = () => {
           </div>
         </main>
 
-        {/* --- NEW SECTION: Python EDA + Network Graphs --- */}
+        {/* EDA & Network Sections */}
         <div
           style={{
             marginTop: "40px",
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+            display: "flex",
+            flexDirection: "column",
             gap: "40px",
+            width: "100%",
           }}
         >
-          {/* EDA Graphs */}
           <div
+            id="eda"
             style={{
               background: "#1e293b",
               padding: "20px",
               borderRadius: "12px",
               boxShadow: "0px 4px 12px rgba(0,0,0,0.5)",
+              flex: 1,
+              maxWidth: "90%",
+              margin: "0 auto",
             }}
           >
             <h3 style={{ marginBottom: "15px", color: "#cbd5e1" }}>
@@ -374,26 +384,71 @@ const Dashboard: React.FC = () => {
             <img
               src="/eda.png"
               alt="EDA Results"
-              style={{ width: "100%", borderRadius: "8px" }}
+              style={{ width: "100%", borderRadius: "8px", height: "auto" }}
             />
           </div>
 
-          {/* Network Graph */}
           <div
+            id="network"
             style={{
               background: "#1e293b",
               padding: "20px",
               borderRadius: "12px",
               boxShadow: "0px 4px 12px rgba(0,0,0,0.5)",
+              flex: 1,
+              maxWidth: "90%",
+              margin: "0 auto",
             }}
           >
-            <h3 style={{ marginBottom: "15px", color: "#cbd5e1" }}>
+            {/** <h3 style={{ marginBottom: "15px", color: "#cbd5e1" }}>
               Network Graph
             </h3>
             <img
-              src="/negative_network.png"
+              src="/network.png"
               alt="Network Graph"
-              style={{ width: "100%", borderRadius: "8px" }}
+              style={{ width: "100%", borderRadius: "8px", height: "auto" }}
+            />
+            */}
+
+            <h3 style={{ marginBottom: "15px", color: "#cbd5e1" }}>
+              Network Graph Travel Dataset
+            </h3>
+            <img
+              src="/network_travel.png"
+              alt="Network Graph"
+              style={{ width: "100%", borderRadius: "8px", height: "auto" }}
+            />
+            <img
+              src="/network_directed_travel.png"
+              alt="Network Graph"
+              style={{ width: "100%", borderRadius: "8px", height: "auto" }}
+            />
+            <img
+              src="/network_directed_weight_travel.png"
+              alt="Network Graph"
+              style={{ width: "100%", borderRadius: "8px", height: "auto" }}
+            />
+          </div>
+
+          <div
+            id="centrality"
+            style={{
+              background: "#1e293b",
+              padding: "20px",
+              borderRadius: "12px",
+              boxShadow: "0px 4px 12px rgba(0,0,0,0.5)",
+              flex: 1,
+              maxWidth: "90%",
+              margin: "0 auto",
+            }}
+          >
+            <h3 style={{ marginBottom: "15px", color: "#cbd5e1" }}>
+              Extended EDA
+            </h3>
+            <img
+              src="/eda_extended.png"
+              alt="Extended EDA Results"
+              style={{ width: "100%", borderRadius: "8px", height: "auto" }}
             />
           </div>
         </div>
